@@ -1,0 +1,17 @@
+supergraph:
+  listen: 127.0.0.1:4000
+include_subgraph_errors:
+  all: true
+telemetry:
+  instrumentation:
+    spans:
+      mode: spec_compliant
+cors:
+  # Set to true to allow any origin, not for use in production
+  allow_any_origin: true
+preview_connectors:
+  subgraphs:
+    currency:
+      $config:
+        # Replace this value with your currencyAPI key
+        apikey: <<REPLACE>>

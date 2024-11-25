@@ -1,0 +1,57 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.10", import: ["@key"])
+  @link(
+    url: "https://specs.apollo.dev/connect/v0.1"
+    import: ["@source", "@connect"]
+  )
+  @source(
+    name: "v1"
+     http: { baseURL: "https://api.currencyapi.com/v3/"}
+
+  )
+
+type Query {
+ 
+  "A list of currencies"
+  currencyList: [Currency]
+    @connect(
+      source: "v1"
+      http: { GET: "/currencies",
+           headers: [{name:"apikey",value:"{$config.apikey}"}]
+            },
+      selection: """
+        data->entries {
+        symbol: key
+          name: value.name
+
+        }
+
+                """
+    )
+    "List exchange rates"
+    listExchangeRate: [ExchangeRate]
+    @connect(
+      source: "v1"
+      http: { GET: "/latest",
+           headers: [{name:"apikey",value:"{$config.apikey}"}]
+            },
+      selection: """
+          data->entries {
+          symbol: key
+          rate: value.value
+          }
+
+                """
+    )
+}
+type Currency
+{
+   symbol: String
+   name: String
+ 
+}
+type ExchangeRate
+{
+  symbol: String
+  rate: Float
+}
