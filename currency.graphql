@@ -6,7 +6,9 @@ extend schema
   )
   @source(
     name: "v1"
-     http: { baseURL: "https://api.currencyapi.com/v3/"}
+     http: { baseURL: "https://api.currencyapi.com/v3/",
+     headers: [{name:"apikey",value:"{$config.apikey}"}]
+     }
 
   )
 
@@ -16,9 +18,7 @@ type Query {
   currencyList: [Currency]
     @connect(
       source: "v1"
-      http: { GET: "/currencies",
-           headers: [{name:"apikey",value:"{$config.apikey}"}]
-            },
+      http: { GET: "/currencies"},
       selection: """
         data->entries {
         symbol: key
@@ -32,9 +32,7 @@ type Query {
     listExchangeRate: [ExchangeRate]
     @connect(
       source: "v1"
-      http: { GET: "/latest",
-           headers: [{name:"apikey",value:"{$config.apikey}"}]
-            },
+      http: { GET: "/latest"},
       selection: """
           data->entries {
           symbol: key
